@@ -1,0 +1,21 @@
+{
+    "name": "my-project",
+    "version": "1.0.0",
+    "description": "A simple project setup for GitHub Actions deployment",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js",
+      "build": "echo 'No build process defined yet'",
+      "test": "echo 'No tests defined yet'"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/kl63/is421.git"
+    },
+    "keywords": [],
+    "author": "Kevin L",
+    "license": "ISC",
+    "dependencies": {},
+    "devDependencies": {}
+  }
+  
