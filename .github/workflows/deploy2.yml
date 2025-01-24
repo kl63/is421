@@ -12,45 +12,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js (if applicable)
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16' # Change as per your project requirements
-
-      - name: Install dependencies
+      # Configure SSH key
+      - name: Configure SSH key
         run: |
-          npm install # Use yarn or other package managers if necessary
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-      - name: Build the project
+      # Add remote host to known_hosts
+      - name: Add remote host to known_hosts
         run: |
-          npm run build # Adjust according to your build process
+          ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to DigitalOcean
+      # Install dependencies and build the project
+      - name: Install and build
+        run: |
+          npm install
+          npm run build
+
+      # Deploy the built files using rsync
+      - name: Deploy to server
         env:
-          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
         run: |
-          if [ "${{ github.ref_name }}" == "main" ]; then
-            DO_SUBDOMAIN=${{ secrets.PRODUCTION_DOMAIN }}
-          elif [ "${{ github.ref_name }}" == "QA" ]; then
-            DO_SUBDOMAIN=${{ secrets.QA_DOMAIN }}
-          elif [ "${{ github.ref_name }}" == "development" ]; then
-            DO_SUBDOMAIN=${{ secrets.DEV_DOMAIN }}
-          else
-            echo "Branch not matched to a deployment domain. Skipping."
-            exit 0
-          fi
-
-          echo "Deploying to $DO_SUBDOMAIN"
-
-          # Example using rsync or scp for static files
-          rsync -avz --delete ./build/ user@$DO_SUBDOMAIN:/var/www/html/
-          
-          # Example for Docker
-          ssh user@$DO_SUBDOMAIN "docker pull yourimage && docker-compose up -d"
-
-      - name: Verify Deployment
-        run: |
-          echo "Deployment to $DO_SUBDOMAIN complete!"
+          rsync -avz --delete ./build/ ${{ secrets.REMOTE_USER }}@$REMOTE_HOST:/var/www/html/
