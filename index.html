@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1 id="stage">Coming Soon</h1>
+    <script>
+        const stage = document.location.hostname.includes("qa")
+            ? "QA Environment"
+            : document.location.hostname.includes("dev")
+            ? "Development Environment"
+            : "Production Environment";
+        document.getElementById("stage").textContent = stage;
+    </script>
+</body>
+</html>
