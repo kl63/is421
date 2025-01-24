@@ -1,4 +1,4 @@
-name: Deploy to DigitalOcean
+name: Deploy to Hero-MyWebClass
 
 on:
   push:
@@ -28,11 +28,10 @@ jobs:
         run: |
           ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
 
-      # Install dependencies and build the project
-      - name: Install and build
+      # Test SSH connection with verbose logging
+      - name: Test SSH connection
         run: |
-          npm install
-          npm run build
+          ssh -v -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@$REMOTE_HOST "echo 'SSH connection successful'"
 
       # Deploy the built files using rsync
       - name: Deploy to server
