@@ -12,17 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
+      # Install sshpass
       - name: Install sshpass
-        run: sudo apt-get install -y sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
 
+      # Configure SSH key
       - name: Configure SSH key
         run: |
           mkdir -p ~/.ssh
@@ -30,15 +28,12 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 143.244.223.251 >> ~/.ssh/known_hosts
 
+      # Test SSH connection
       - name: Test SSH connection
         run: |
-          sshpass -p "${{ secrets.SUDO_PASSWORD }}" ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 "echo 'SSH connection successful'" || exit 1
+          sshpass -p "${{ secrets.SUDO_PASSWORD }}" ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 "echo 'SSH connection successful'"
 
-      - name: Configure passwordless sudo
-        run: |
-          sshpass -p "${{ secrets.SUDO_PASSWORD }}" ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 \
-          "echo 'kl63 ALL=(ALL) NOPASSWD: /usr/bin/rsync' | sudo -S tee /etc/sudoers.d/kl63-rsync"
-
+      # Set deployment directory based on branch
       - name: Set deployment directory
         id: set-deploy-dir
         run: |
@@ -54,6 +49,7 @@ jobs:
               exit 1 ;;
           esac
 
+      # Verify build directory exists
       - name: Verify build directory
         run: |
           if [ ! -d "./build" ]; then
@@ -61,11 +57,7 @@ jobs:
             exit 1
           fi
 
+      # Deploy files using rsync
       - name: Deploy to server
         run: |
-          rsync -avz --progress --delete ./build/ kl63@143.244.223.251:${{ env.DEPLOY_DIR }}/ --rsync-path="sudo rsync"
-
-      - name: Clean up sudoers
-        run: |
-          sshpass -p "${{ secrets.SUDO_PASSWORD }}" ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 \
-          "sudo rm /etc/sudoers.d/kl63-rsync"
+          rsync -avz --delete ./build/ kl63@143.244.223.251:${{ env.DEPLOY_DIR }}/ --rsync-path="sudo rsync"
