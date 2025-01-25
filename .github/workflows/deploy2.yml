@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # Adjust to your project's Node.js version
+          node-version: '16'
 
       # Install dependencies
       - name: Install dependencies
@@ -53,25 +53,17 @@ jobs:
         run: |
           case "${{ github.ref_name }}" in
             main)
-              echo "DEPLOY_DIR=/var/www/html/production" >> $GITHUB_ENV ;;
+              echo "DEPLOY_DIR=/var/www/production" >> $GITHUB_ENV ;;
             development)
-              echo "DEPLOY_DIR=/var/www/html/development" >> $GITHUB_ENV ;;
+              echo "DEPLOY_DIR=/var/www/development" >> $GITHUB_ENV ;;
             QA)
-              echo "DEPLOY_DIR=/var/www/html/QA" >> $GITHUB_ENV ;;
+              echo "DEPLOY_DIR=/var/www/qa" >> $GITHUB_ENV ;;
             *)
               echo "Unknown branch: ${{ github.ref_name }}" >&2
               exit 1 ;;
           esac
 
-      # Verify build directory exists
-      - name: Verify build directory
-        run: |
-          if [ ! -d "./build" ]; then
-            echo "Build directory not found. Please check your build process."
-            exit 1
-          fi
-
       # Deploy files using rsync
       - name: Deploy to server
         run: |
-          rsync -avz --delete ./build/ kl63@143.244.223.251:${{ env.DEPLOY_DIR }}/ --rsync-path="sudo rsync"
+          rsync -avz --delete ./build/ kl63@143.244.223.251:${{ env.DEPLOY_DIR }}/
