@@ -55,7 +55,7 @@ jobs:
             main)
               echo "DEPLOY_DIR=/var/www/production" >> $GITHUB_ENV ;;
             development)
-              echo "DEPLOY_DIR=/var/www/development" >> $GITHUB_ENV ;;
+              echo "DEPLOY_DIR=/var/www/dev" >> $GITHUB_ENV ;;
             QA)
               echo "DEPLOY_DIR=/var/www/qa" >> $GITHUB_ENV ;;
             *)
