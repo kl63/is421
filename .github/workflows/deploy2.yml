@@ -48,5 +48,5 @@ jobs:
       # Deploy files using rsync
       - name: Deploy to server
         run: |
-          rsync -avz --delete ./build/ kl63@143.244.223.251:/var/www/html/development/ --rsync-path="sudo rsync"
+          rsync -avz --delete ./build/ kl63@143.244.223.251:/var/www/html/dev/ --rsync-path="sudo rsync"
 
