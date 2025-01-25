@@ -45,8 +45,12 @@ jobs:
               exit 1 ;;
           esac
 
+      # Ensure passwordless sudo is configured
+      - name: Ensure passwordless sudo for rsync
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 "echo 'kl63 ALL=(ALL) NOPASSWD: /usr/bin/rsync' | sudo tee /etc/sudoers.d/kl63-rsync"
+
       # Deploy files using rsync
       - name: Deploy to server
         run: |
-          rsync -avz --delete ./build/ kl63@143.244.223.251:/var/www/html/dev/ --rsync-path="sudo rsync"
-
+          rsync -avz --delete ./build/ kl63@143.244.223.251:${{ env.DEPLOY_DIR }}/ --rsync-path="sudo rsync"
