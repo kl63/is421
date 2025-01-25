@@ -29,25 +29,23 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@143.244.223.251 "echo 'SSH connection successful'"
 
-      # Determine deployment directory based on branch
+      # Set deployment directory based on branch
       - name: Set deployment directory
+        id: set-deploy-dir
         run: |
-          if [ "${{ github.ref_name }}" == "main" ]; then
-            echo "DEPLOY_DIR=/var/www/html/production" >> $GITHUB_ENV
-          elif [ "${{ github.ref_name }}" == "development" ]; then
-            echo "DEPLOY_DIR=/var/www/html/development" >> $GITHUB_ENV
-          elif [ "${{ github.ref_name }}" == "QA" ]; then
-            echo "DEPLOY_DIR=/var/www/html/QA" >> $GITHUB_ENV
-          else
-            echo "Unknown branch: ${{ github.ref_name }}"
-            exit 1
-          fi
+          case "${{ github.ref_name }}" in
+            main)
+              echo "DEPLOY_DIR=/var/www/html/production" >> $GITHUB_ENV ;;
+            development)
+              echo "DEPLOY_DIR=/var/www/html/development" >> $GITHUB_ENV ;;
+            QA)
+              echo "DEPLOY_DIR=/var/www/html/QA" >> $GITHUB_ENV ;;
+            *)
+              echo "Unknown branch: ${{ github.ref_name }}"
+              exit 1 ;;
+          esac
 
       # Deploy files using rsync
       - name: Deploy to server
-        env:
-          REMOTE_HOST: 143.244.223.251
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          DEPLOY_DIR: ${{ env.DEPLOY_DIR }}
         run: |
-          rsync -avz --delete ./build/ $REMOTE_USER@$REMOTE_HOST:$DEPLOY_DIR/
+          rsync -avz --delete ./build/ ${{ secrets.REMOTE_USER }}@143.244.223.251:${{ env.DEPLOY_DIR }}/
