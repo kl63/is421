@@ -48,4 +48,4 @@ jobs:
       # Deploy files using rsync
       - name: Deploy to server
         run: |
-          rsync -avz --delete ./build/ ${{ secrets.REMOTE_USER }}@143.244.223.251:${{ env.DEPLOY_DIR }}/
+          rsync -avz --delete ./build/ kl63@143.244.223.251:${{ env.DEPLOY_DIR }}/
