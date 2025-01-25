@@ -22,6 +22,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 143.244.223.251 >> ~/.ssh/known_hosts
+
+      # Test SSH connection
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -v -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@143.244.223.251 "echo 'SSH connection successful'"
 
       # Determine deployment directory based on branch
       - name: Set deployment directory
@@ -34,17 +40,7 @@ jobs:
             echo "DEPLOY_DIR=/var/www/html/QA" >> $GITHUB_ENV
           fi
 
-      # Add remote host to known_hosts
-      - name: Add remote host to known_hosts
-        run: |
-          ssh-keyscan -H 143.244.223.251 >> ~/.ssh/known_hosts
-
-      # Test SSH connection with verbose logging
-      - name: Test SSH connection
-        run: |
-          ssh -v -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@143.244.223.251 "echo 'SSH connection successful'"
-
-      # Deploy the built files using rsync
+      # Deploy files using rsync
       - name: Deploy to server
         env:
           REMOTE_HOST: 143.244.223.251
