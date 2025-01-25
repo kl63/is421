@@ -27,7 +27,7 @@ jobs:
       # Test SSH connection
       - name: Test SSH connection
         run: |
-          ssh -o StrictHostKeyChecking=no -v -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@143.244.223.251 "echo 'SSH connection successful'"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@143.244.223.251 "echo 'SSH connection successful'"
 
       # Determine deployment directory based on branch
       - name: Set deployment directory
@@ -38,6 +38,9 @@ jobs:
             echo "DEPLOY_DIR=/var/www/html/development" >> $GITHUB_ENV
           elif [ "${{ github.ref_name }}" == "QA" ]; then
             echo "DEPLOY_DIR=/var/www/html/QA" >> $GITHUB_ENV
+          else
+            echo "Unknown branch: ${{ github.ref_name }}"
+            exit 1
           fi
 
       # Deploy files using rsync
