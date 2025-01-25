@@ -16,6 +16,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Install sshpass
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
       # Configure SSH key
       - name: Configure SSH key
         run: |
@@ -27,7 +31,13 @@ jobs:
       # Test SSH connection
       - name: Test SSH connection
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 "echo 'SSH connection successful'"
+          sshpass -p "${{ secrets.SUDO_PASSWORD }}" ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 "echo 'SSH connection successful'"
+
+      # Configure passwordless sudo for rsync
+      - name: Configure passwordless sudo
+        run: |
+          sshpass -p "${{ secrets.SUDO_PASSWORD }}" ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 \
+          "echo 'kl63 ALL=(ALL) NOPASSWD: /usr/bin/rsync' | sudo -S tee /etc/sudoers.d/kl63-rsync"
 
       # Set deployment directory based on branch
       - name: Set deployment directory
@@ -44,11 +54,6 @@ jobs:
               echo "Unknown branch: ${{ github.ref_name }}"
               exit 1 ;;
           esac
-
-      # Ensure passwordless sudo is configured
-      - name: Ensure passwordless sudo for rsync
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 "echo 'kl63 ALL=(ALL) NOPASSWD: /usr/bin/rsync' | sudo tee /etc/sudoers.d/kl63-rsync"
 
       # Deploy files using rsync
       - name: Deploy to server
