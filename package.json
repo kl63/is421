@@ -1,21 +1,17 @@
 {
-    "name": "my-project",
+    "name": "mywebclass-project",
     "version": "1.0.0",
-    "description": "A simple project setup for GitHub Actions deployment",
+    "description": "A web application for MyWebClass deployment",
     "main": "index.js",
     "scripts": {
       "start": "node index.js",
-      "build": "echo 'No build process defined yet'",
-      "test": "echo 'No tests defined yet'"
+      "build": "mkdir -p build && cp -r public/* build/"
     },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/kl63/is421.git"
+    "dependencies": {
+      "express": "^4.18.2"
     },
-    "keywords": [],
-    "author": "Kevin L",
-    "license": "ISC",
-    "dependencies": {},
-    "devDependencies": {}
+    "devDependencies": {},
+    "author": "Your Name",
+    "license": "MIT"
   }
   
