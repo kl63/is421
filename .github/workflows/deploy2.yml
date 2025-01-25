@@ -27,7 +27,7 @@ jobs:
       # Test SSH connection
       - name: Test SSH connection
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@143.244.223.251 "echo 'SSH connection successful'"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 "echo 'SSH connection successful'"
 
       # Set deployment directory based on branch
       - name: Set deployment directory
