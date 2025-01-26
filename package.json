@@ -1,0 +1,17 @@
+{
+    "name": "mywebclass-project",
+    "version": "1.0.0",
+    "description": "A web application for MyWebClass deployment",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js",
+      "build": "mkdir -p build && cp -r public/* build/"
+    },
+    "dependencies": {
+      "express": "^4.18.2"
+    },
+    "devDependencies": {},
+    "author": "Your Name",
+    "license": "MIT"
+  }
+  

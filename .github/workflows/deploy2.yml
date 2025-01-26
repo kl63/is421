@@ -1,4 +1,4 @@
-name: Deploy to DigitalOcean
+name: Deploy to Hero-MyWebClass
 
 on:
   push:
@@ -12,45 +12,58 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js (if applicable)
+      # Set up Node.js environment
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # Change as per your project requirements
+          node-version: '16'
 
+      # Install dependencies
       - name: Install dependencies
-        run: |
-          npm install # Use yarn or other package managers if necessary
+        run: npm install
 
+      # Build the project
       - name: Build the project
+        run: npm run build
+
+      # Install sshpass
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      # Configure SSH key
+      - name: Configure SSH key
         run: |
-          npm run build # Adjust according to your build process
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 143.244.223.251 >> ~/.ssh/known_hosts
 
-      - name: Deploy to DigitalOcean
-        env:
-          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      # Test SSH connection
+      - name: Test SSH connection
         run: |
-          if [ "${{ github.ref_name }}" == "main" ]; then
-            DO_SUBDOMAIN=${{ secrets.PRODUCTION_DOMAIN }}
-          elif [ "${{ github.ref_name }}" == "QA" ]; then
-            DO_SUBDOMAIN=${{ secrets.QA_DOMAIN }}
-          elif [ "${{ github.ref_name }}" == "development" ]; then
-            DO_SUBDOMAIN=${{ secrets.DEV_DOMAIN }}
-          else
-            echo "Branch not matched to a deployment domain. Skipping."
-            exit 0
-          fi
+          sshpass -p "${{ secrets.SUDO_PASSWORD }}" ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kl63@143.244.223.251 "echo 'SSH connection successful'"
 
-          echo "Deploying to $DO_SUBDOMAIN"
-
-          # Example using rsync or scp for static files
-          rsync -avz --delete ./build/ user@$DO_SUBDOMAIN:/var/www/html/
-          
-          # Example for Docker
-          ssh user@$DO_SUBDOMAIN "docker pull yourimage && docker-compose up -d"
-
-      - name: Verify Deployment
+      # Set deployment directory based on branch
+      - name: Set deployment directory
+        id: set-deploy-dir
         run: |
-          echo "Deployment to $DO_SUBDOMAIN complete!"
+          case "${{ github.ref_name }}" in
+            main)
+              echo "DEPLOY_DIR=/var/www/production" >> $GITHUB_ENV ;;
+            development)
+              echo "DEPLOY_DIR=/var/www/dev" >> $GITHUB_ENV ;;
+            QA)
+              echo "DEPLOY_DIR=/var/www/qa" >> $GITHUB_ENV ;;
+            *)
+              echo "Unknown branch: ${{ github.ref_name }}" >&2
+              exit 1 ;;
+          esac
+
+      # Deploy files using rsync
+      - name: Deploy to server
+        run: |
+          rsync -avz --delete ./build/ kl63@143.244.223.251:${{ env.DEPLOY_DIR }}/
