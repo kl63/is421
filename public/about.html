@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sportify - Coming Soon</title>
+    <title>About Us - Sportify</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -12,7 +12,7 @@
             background-color: #f4f4f4;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: auto;
             background: white;
             padding: 20px;
@@ -20,26 +20,18 @@
             box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
         }
         h1 { color: #333; }
-        .hero {
-            background: url('images/hero-image.jpg') no-repeat center center;
-            background-size: cover;
-            height: 200px;
+        .team-photo {
+            width: 100%;
             border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .team-member {
             margin-bottom: 20px;
         }
         .footer {
             margin-top: 20px;
             font-size: 14px;
             color: #555;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            color: white;
-            background: #28a745;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 10px;
         }
         nav {
             margin-top: 10px;
@@ -53,13 +45,27 @@
 </head>
 <body>
     <div class="container">
-        <div class="hero"></div>
-        <h1>Sportify - The Future of Sports Blogging</h1>
-        <p>We’re working on something amazing! Stay tuned for the launch of Sportify, a platform that revolutionizes sports blogging.</p>
-        <a href="#" class="btn">Join the Waitlist</a>
-        
+        <h1>Meet the Sportify Team</h1>
+        <img src="images/team-photo.jpg" alt="Team Photo" class="team-photo">
+        <p>We are a passionate team of sports lovers and tech enthusiasts dedicated to revolutionizing sports blogging.</p>
+
+        <div class="team-member">
+            <h3>Kevin</h3>
+            <p>Kevin is a full-stack developer with a passion for building intuitive and scalable web applications.</p>
+        </div>
+
+        <div class="team-member">
+            <h3>John</h3>
+            <p>John is a UI/UX designer ensuring Sportify delivers the best user experience possible.</p>
+        </div>
+
+        <div class="team-member">
+            <h3>Emily</h3>
+            <p>Emily handles content strategy and partnerships to bring engaging stories to our platform.</p>
+        </div>
+
         <nav>
-            <a href="about.html">Meet the Team</a>
+            <a href="index.html">Home</a>
         </nav>
 
         <p class="footer" id="stage">Loading environment...</p>
