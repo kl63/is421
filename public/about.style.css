@@ -35,11 +35,15 @@ h1 {
 }
 
 nav {
-    margin-top: 10px;
+    background-color: #007BFF;
+    padding: 10px 0;
+    text-align: center;
+    border-radius: 5px;
 }
 
 nav a {
     text-decoration: none;
-    color: #007BFF;
-    margin: 0 10px;
+    color: white;
+    margin: 0 15px;
+    font-weight: bold;
 }
