@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sportify - Coming Soon</title>
+    <title>FitVision AI - Coming Soon</title>
     <link rel="stylesheet" href="index.style.css">
 </head>
 <body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+    </nav>
     <div class="container">
-        <div class="hero"></div>
-        <h1>Sportify - The Future of Sports Blogging (Coming Soon!)</h1>
-        <p>We’re working on something amazing! Stay tuned for the launch of Sportify, a platform that revolutionizes sports blogging.</p>
-        <a href="#" class="btn">Join the Waitlist</a>
+        <!-- Updated Hero Section with Image -->
+        <div class="hero">
+            <img src="images/fitvision.jpg" alt="FitVision AI - Personalized Workout Plans" class="hero-img">
+        </div>
+        <h1>FitVision AI - AI-Powered Personalized Workout Plans</h1>
+        <p>Welcome to the future of fitness! FitVision AI is an innovative platform using artificial intelligence to create customized workout plans tailored just for you. Stay tuned as we revolutionize how you achieve your fitness goals!</p>
+        <a href="#" class="btn">Coming Soon</a>
         
-        <nav>
-            <a href="about.html">Meet the Team</a>
-        </nav>
-
-        <!-- //ALWAYS KEEP THIS LINE --> <p class="footer" id="stage">Loading environment...</p>
+        <!-- ALWAYS KEEP THIS LINE --> <p class="footer" id="stage">Loading environment...</p>
     </div>
 
-    <script> //ALWAYS KEEP THIS SCRIPT START
+    <script> <!-- ALWAYS KEEP THIS SCRIPT START -->
         const stage = document.location.hostname.includes("qa")
             ? "QA Environment"
             : document.location.hostname.includes("dev")
